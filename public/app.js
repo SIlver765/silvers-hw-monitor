@@ -92,6 +92,12 @@ function setFanAuto(id) {
   fetch(`/api/fans/${encodeURIComponent(id)}/auto`, { method: 'POST' }).catch(() => {});
 }
 
+function setFanFull(id) {
+  fetch(`/api/fans/${encodeURIComponent(id)}/full`, { method: 'POST' }).catch(() => {});
+}
+
+const modeLabel = { 0: 'Full speed', 1: 'Manual', 2: 'Automatic' };
+
 function renderFans(data) {
   const list = document.getElementById('fan-list');
   const fans = (data.fans || []).filter((f) => f.controllable || f.rpm !== null);
@@ -105,17 +111,12 @@ function renderFans(data) {
     .map((f) => {
       const percent = f.percent ?? 0;
       const safeId = f.id.replace(/[^a-zA-Z0-9]/g, '-');
-      return `
-        <div class="fan-block" data-fan-id="${f.id}">
-          <div class="fan-head">
-            <span>${f.label}</span>
-            <span class="fan-rpm">${f.rpm != null ? f.rpm + ' RPM' : '—'}</span>
-          </div>
-          ${
-            f.controllable
-              ? `
+
+      let body;
+      if (f.hasDutyControl) {
+        body = `
           <div class="slider-row">
-            <input type="range" min="0" max="100" value="${percent}" id="slider-${safeId}" ${f.controllable ? '' : 'disabled'} />
+            <input type="range" min="0" max="100" value="${percent}" id="slider-${safeId}" />
             <span class="slider-value" id="value-${safeId}">${percent}%</span>
           </div>
           <div class="preset-row">
@@ -123,15 +124,34 @@ function renderFans(data) {
             <button class="preset-btn" data-preset="balanced">Balanced</button>
             <button class="preset-btn" data-preset="performance">Performance</button>
             <button class="preset-btn" data-preset="auto">Auto</button>
-          </div>`
-              : '<div class="fan-rpm">Read-only on this chip</div>'
-          }
+          </div>`;
+      } else if (f.hasEnableToggle) {
+        body = `
+          <div class="fan-rpm" style="margin-bottom: 8px;">
+            This chip only supports a full-speed override, not a smooth percentage
+            (current mode: ${modeLabel[f.mode] ?? 'unknown'}).
+          </div>
+          <div class="preset-row">
+            <button class="preset-btn" data-preset="auto">Auto (BIOS)</button>
+            <button class="preset-btn" data-preset="full">Full Speed</button>
+          </div>`;
+      } else {
+        body = '<div class="fan-rpm">Read-only on this chip</div>';
+      }
+
+      return `
+        <div class="fan-block" data-fan-id="${f.id}">
+          <div class="fan-head">
+            <span>${f.label}</span>
+            <span class="fan-rpm">${f.rpm != null ? f.rpm + ' RPM' : '—'}</span>
+          </div>
+          ${body}
         </div>`;
     })
     .join('');
 
   for (const f of fans) {
-    if (!f.controllable) continue;
+    if (!f.hasDutyControl) continue;
     const safeId = f.id.replace(/[^a-zA-Z0-9]/g, '-');
     const slider = document.getElementById(`slider-${safeId}`);
     const valueLabel = document.getElementById(`value-${safeId}`);
@@ -147,10 +167,16 @@ function renderFans(data) {
       const id = block.dataset.fanId;
       const preset = btn.dataset.preset;
       block.querySelectorAll('.preset-btn').forEach((b) => b.classList.toggle('active', b === btn));
+
       if (preset === 'auto') {
         setFanAuto(id);
         return;
       }
+      if (preset === 'full') {
+        setFanFull(id);
+        return;
+      }
+
       const percent = fanPresets[preset];
       const safeId = id.replace(/[^a-zA-Z0-9]/g, '-');
       const slider = document.getElementById(`slider-${safeId}`);

@@ -2,8 +2,13 @@
 
 A lightweight hardware dashboard for **umbrelOS / [5tratumOS](https://github.com/WillItMod/5tratum)**
 (a home-server OS built the same way as Umbrel): live CPU temp & usage, RAM usage, per-drive
-storage usage & temperature, and PWM fan control (Silent / Balanced / Performance presets, or a
-manual slider) — packaged as a self-contained Docker app.
+storage usage & temperature, and fan control — packaged as a self-contained Docker app.
+
+Fan control adapts to what the host chip actually supports:
+- **Full duty-cycle control** (most SuperIO chips, e.g. `it87`/`nct6775`): Silent/Balanced/Performance
+  presets or a manual 0-100% slider.
+- **Enable-only chips** (e.g. `hp-wmi` on HP hardware, which exposes `pwmN_enable` but no `pwmN`
+  duty file or RPM tachometer): a simple Auto (BIOS) / Full Speed toggle instead of a percentage.
 
 ## How it works
 

@@ -62,6 +62,12 @@ app.post('/api/fans/:id/auto', (req, res) => {
   res.status(result.ok ? 200 : 400).json(result);
 });
 
+app.post('/api/fans/:id/full', (req, res) => {
+  const result = hwmon.setFanFullSpeed(decodeURIComponent(req.params.id));
+  if (!result.ok) console.error(`Failed to set fan ${req.params.id} to full speed: ${result.error}`);
+  res.status(result.ok ? 200 : 400).json(result);
+});
+
 app.post('/api/diagnostics/run', (req, res) => {
   const report = hwmon.diagnostics();
   console.log(`Sensor diagnostics: ${JSON.stringify(report, null, 2)}`);
