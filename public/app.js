@@ -96,6 +96,17 @@ function setFanFull(id) {
   fetch(`/api/fans/${encodeURIComponent(id)}/full`, { method: 'POST' }).catch(() => {});
 }
 
+function applyFanLevel(id, level) {
+  clearTimeout(fanState[id]);
+  fanState[id] = setTimeout(() => {
+    fetch(`/api/fans/${encodeURIComponent(id)}/level`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ level }),
+    }).catch(() => {});
+  }, 250);
+}
+
 const modeLabel = { 0: 'Full speed', 1: 'Manual', 2: 'Automatic' };
 
 function renderFans(data) {
@@ -135,15 +146,28 @@ function renderFans(data) {
             <button class="preset-btn" data-preset="auto">Auto (BIOS)</button>
             <button class="preset-btn" data-preset="full">Full Speed</button>
           </div>`;
+      } else if (f.hasLevelControl) {
+        body = `
+          <div class="fan-rpm" style="margin-bottom: 8px;">
+            No RPM tachometer on this chip — this is a discrete ACPI speed step, not an
+            exact percentage.
+          </div>
+          <div class="slider-row">
+            <input type="range" min="0" max="${f.levelMax}" step="1" value="${f.levelCur ?? 0}" id="level-${safeId}" />
+            <span class="slider-value" id="level-value-${safeId}">${f.levelCur ?? 0}/${f.levelMax}</span>
+          </div>`;
       } else {
         body = '<div class="fan-rpm">Read-only on this chip</div>';
       }
+
+      const headline =
+        f.rpm != null ? `${f.rpm} RPM` : f.levelMax != null ? `Level ${f.levelCur ?? 0}/${f.levelMax}` : '—';
 
       return `
         <div class="fan-block" data-fan-id="${f.id}">
           <div class="fan-head">
             <span>${f.label}</span>
-            <span class="fan-rpm">${f.rpm != null ? f.rpm + ' RPM' : '—'}</span>
+            <span class="fan-rpm">${headline}</span>
           </div>
           ${body}
         </div>`;
@@ -151,14 +175,22 @@ function renderFans(data) {
     .join('');
 
   for (const f of fans) {
-    if (!f.hasDutyControl) continue;
     const safeId = f.id.replace(/[^a-zA-Z0-9]/g, '-');
-    const slider = document.getElementById(`slider-${safeId}`);
-    const valueLabel = document.getElementById(`value-${safeId}`);
-    slider.addEventListener('input', () => {
-      valueLabel.textContent = `${slider.value}%`;
-      applyFanPercent(f.id, Number(slider.value));
-    });
+    if (f.hasDutyControl) {
+      const slider = document.getElementById(`slider-${safeId}`);
+      const valueLabel = document.getElementById(`value-${safeId}`);
+      slider.addEventListener('input', () => {
+        valueLabel.textContent = `${slider.value}%`;
+        applyFanPercent(f.id, Number(slider.value));
+      });
+    } else if (f.hasLevelControl) {
+      const slider = document.getElementById(`level-${safeId}`);
+      const valueLabel = document.getElementById(`level-value-${safeId}`);
+      slider.addEventListener('input', () => {
+        valueLabel.textContent = `${slider.value}/${f.levelMax}`;
+        applyFanLevel(f.id, Number(slider.value));
+      });
+    }
   }
 
   list.querySelectorAll('.preset-btn').forEach((btn) => {

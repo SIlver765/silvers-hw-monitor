@@ -23,7 +23,7 @@ function pickCpuTemp(temps) {
 app.get('/api/status', async (req, res) => {
   try {
     const temps = hwmon.readTempsC();
-    const fans = hwmon.readFans();
+    const fans = [...hwmon.readFans(), ...hwmon.readCoolingFans()];
     const [disks, drives] = await Promise.all([metrics.diskUsage(), metrics.driveTemps()]);
 
     res.json({
@@ -65,6 +65,16 @@ app.post('/api/fans/:id/auto', (req, res) => {
 app.post('/api/fans/:id/full', (req, res) => {
   const result = hwmon.setFanFullSpeed(decodeURIComponent(req.params.id));
   if (!result.ok) console.error(`Failed to set fan ${req.params.id} to full speed: ${result.error}`);
+  res.status(result.ok ? 200 : 400).json(result);
+});
+
+app.post('/api/fans/:id/level', (req, res) => {
+  const { level } = req.body;
+  if (typeof level !== 'number') {
+    return res.status(400).json({ ok: false, error: 'level must be a number' });
+  }
+  const result = hwmon.setCoolingLevel(decodeURIComponent(req.params.id), level);
+  if (!result.ok) console.error(`Failed to set fan ${req.params.id} to level ${level}: ${result.error}`);
   res.status(result.ok ? 200 : 400).json(result);
 });
 
