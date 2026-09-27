@@ -19,23 +19,43 @@
       </div>
     </header>
 
-    <section class="stat-grid" id="stat-grid" aria-label="CPU, memory and storage summary"></section>
+    <nav class="tabs" aria-label="Sections">
+      <button class="tab-btn active" data-tab="dashboard">Dashboard</button>
+      <button class="tab-btn" data-tab="logs">Logs <span id="log-error-badge" class="badge" hidden>!</span></button>
+    </nav>
 
-    <section class="card" aria-label="Drives">
-      <h2 class="card-title">Drives</h2>
-      <div id="drive-list" class="drive-list"></div>
+    <section id="tab-dashboard" class="tab-panel">
+      <section class="stat-grid" id="stat-grid" aria-label="CPU, memory and storage summary"></section>
+
+      <section class="card" aria-label="Drives">
+        <h2 class="card-title">Drives</h2>
+        <div id="drive-list" class="drive-list"></div>
+      </section>
+
+      <section class="card" aria-label="Fan control">
+        <h2 class="card-title">Fan Control</h2>
+        <div id="fan-list" class="fan-list"></div>
+      </section>
+
+      <p class="empty-note" id="empty-note" hidden>
+        No hardware sensors were found. Make sure the container has read/write access to
+        <code>/sys/class/hwmon</code> and the appropriate kernel drivers (e.g. <code>it87</code>,
+        <code>nct6775</code>, <code>coretemp</code>) are loaded on the host.
+      </p>
     </section>
 
-    <section class="card" aria-label="Fan control">
-      <h2 class="card-title">Fan Control</h2>
-      <div id="fan-list" class="fan-list"></div>
+    <section id="tab-logs" class="tab-panel" hidden>
+      <section class="card" aria-label="Application logs">
+        <div class="card-title-row">
+          <h2 class="card-title">Logs</h2>
+          <div class="log-actions">
+            <label class="log-toggle"><input type="checkbox" id="log-autoscroll" checked /> Auto-scroll</label>
+            <button id="log-clear" class="preset-btn">Clear</button>
+          </div>
+        </div>
+        <div id="log-list" class="log-list"></div>
+      </section>
     </section>
-
-    <p class="empty-note" id="empty-note" hidden>
-      No hardware sensors were found. Make sure the container has read/write access to
-      <code>/sys/class/hwmon</code> and the appropriate kernel drivers (e.g. <code>it87</code>,
-      <code>nct6775</code>, <code>coretemp</code>) are loaded on the host.
-    </p>
   </div>
 
   <script src="app.js"></script>

@@ -250,3 +250,103 @@ body {
 .temp-ok { color: var(--accent-green); }
 .temp-warn { color: var(--accent-amber); }
 .temp-hot { color: var(--accent-red); }
+
+.tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.tab-btn {
+  border: none;
+  background: none;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 4px;
+  margin-right: 14px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tab-btn.active {
+  color: var(--text-primary);
+  border-bottom-color: var(--accent-blue);
+}
+
+.badge {
+  background: var(--accent-red);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  border-radius: 999px;
+  width: 15px;
+  height: 15px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.badge[hidden] { display: none; }
+
+.card-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.card-title-row .card-title { margin: 0; }
+
+.log-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.log-toggle {
+  font-size: 12px;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+.log-actions .preset-btn {
+  flex: none;
+  padding: 4px 12px;
+}
+
+.log-list {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  max-height: 420px;
+  overflow-y: auto;
+  font-family: "SF Mono", Consolas, Menlo, monospace;
+  font-size: 12px;
+}
+
+.log-row {
+  display: flex;
+  gap: 8px;
+  padding: 5px 10px;
+  border-bottom: 1px solid var(--border);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.log-row:last-child { border-bottom: none; }
+
+.log-time { color: var(--text-secondary); flex-shrink: 0; }
+.log-level { flex-shrink: 0; font-weight: 700; width: 46px; }
+.log-row.info .log-level { color: var(--accent-blue); }
+.log-row.warn .log-level { color: var(--accent-amber); }
+.log-row.error .log-level { color: var(--accent-red); }
+.log-row.error { background: color-mix(in srgb, var(--accent-red) 8%, transparent); }
+.log-empty { padding: 14px; color: var(--text-secondary); font-family: inherit; }

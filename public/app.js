@@ -199,6 +199,79 @@ function initTheme() {
   });
 }
 
+function initTabs() {
+  const buttons = document.querySelectorAll('.tab-btn');
+  buttons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      buttons.forEach((b) => b.classList.toggle('active', b === btn));
+      document.querySelectorAll('.tab-panel').forEach((panel) => {
+        panel.hidden = panel.id !== `tab-${btn.dataset.tab}`;
+      });
+      if (btn.dataset.tab === 'logs') {
+        document.getElementById('log-error-badge').hidden = true;
+      }
+    });
+  });
+}
+
+function formatLogTime(ts) {
+  return new Date(ts).toLocaleTimeString([], { hour12: false });
+}
+
+function renderLogs(logs) {
+  const list = document.getElementById('log-list');
+  if (logs.length === 0) {
+    list.innerHTML = '<div class="log-empty">No log entries yet.</div>';
+    return;
+  }
+  const atBottom = list.scrollHeight - list.scrollTop - list.clientHeight < 40;
+  list.innerHTML = logs
+    .map(
+      (l) => `<div class="log-row ${l.level}">
+        <span class="log-time">${formatLogTime(l.ts)}</span>
+        <span class="log-level">${l.level.toUpperCase()}</span>
+        <span class="log-msg">${escapeHtml(l.message)}</span>
+      </div>`
+    )
+    .join('');
+
+  const autoscroll = document.getElementById('log-autoscroll').checked;
+  if (autoscroll && atBottom) list.scrollTop = list.scrollHeight;
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+async function pollLogs() {
+  try {
+    const res = await fetch('/api/logs');
+    const data = await res.json();
+    const logs = data.logs || [];
+    renderLogs(logs);
+
+    const logsTabActive = document.getElementById('tab-logs').hidden === false;
+    if (!logsTabActive && logs.some((l) => l.level === 'error')) {
+      document.getElementById('log-error-badge').hidden = false;
+    }
+  } catch (err) {
+    console.error('log poll failed', err);
+  }
+}
+
+function initLogControls() {
+  document.getElementById('log-clear').addEventListener('click', async () => {
+    await fetch('/api/logs/clear', { method: 'POST' }).catch(() => {});
+    pollLogs();
+  });
+}
+
 initTheme();
+initTabs();
+initLogControls();
 poll();
+pollLogs();
 setInterval(poll, POLL_MS);
+setInterval(pollLogs, POLL_MS);
