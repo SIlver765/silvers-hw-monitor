@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Silver's HW Monitor</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">H</div>
+        <div class="brand-name">Silver's HW Monitor</div>
+      </div>
+      <div class="topbar-actions">
+        <span class="live-badge"><span class="dot"></span>Live</span>
+        <button id="theme-toggle" class="icon-btn" title="Toggle theme" aria-label="Toggle dark mode">🌙</button>
+      </div>
+    </header>
+
+    <section class="stat-grid" id="stat-grid" aria-label="CPU, memory and storage summary"></section>
+
+    <section class="card" aria-label="Drives">
+      <h2 class="card-title">Drives</h2>
+      <div id="drive-list" class="drive-list"></div>
+    </section>
+
+    <section class="card" aria-label="Fan control">
+      <h2 class="card-title">Fan Control</h2>
+      <div id="fan-list" class="fan-list"></div>
+    </section>
+
+    <p class="empty-note" id="empty-note" hidden>
+      No hardware sensors were found. Make sure the container has read/write access to
+      <code>/sys/class/hwmon</code> and the appropriate kernel drivers (e.g. <code>it87</code>,
+      <code>nct6775</code>, <code>coretemp</code>) are loaded on the host.
+    </p>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
