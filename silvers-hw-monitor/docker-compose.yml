@@ -3,7 +3,7 @@ version: "3.7"
 services:
   app_proxy:
     environment:
-      APP_HOST: $APP_HARDWARE_MONITOR_WEB_IP
+      APP_HOST: $APP_SILVERS_HW_MONITOR_WEB_IP
       APP_PORT: 3300
 
   web:

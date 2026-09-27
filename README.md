@@ -1,8 +1,9 @@
 # Silver's HW Monitor
 
-A lightweight hardware dashboard for **umbrelOS / StratumOS**: live CPU temp & usage, RAM usage,
-per-drive storage usage & temperature, and PWM fan control (Silent / Balanced / Performance
-presets, or a manual slider) — packaged as a self-contained Docker app.
+A lightweight hardware dashboard for **umbrelOS / [5tratumOS](https://github.com/WillItMod/5tratum)**
+(a home-server OS built the same way as Umbrel): live CPU temp & usage, RAM usage, per-drive
+storage usage & temperature, and PWM fan control (Silent / Balanced / Performance presets, or a
+manual slider) — packaged as a self-contained Docker app.
 
 ## How it works
 
@@ -24,9 +25,10 @@ kernel (via `lm-sensors`/`it87`, `nct6775`, `nct6683`, etc. — same drivers Lin
 `fancontrol` uses). If no `pwm*` files exist under `/sys/class/hwmon/hwmon*/`, fans will show up
 as read-only (RPM only) or not at all.
 
-The container needs read-write access to hwmon to change fan speed — see `docker-compose.yml`,
-which mounts `/sys/class/hwmon:/sys/class/hwmon:rw` and adds `cap_add: [SYS_RAWIO]`. Reading
-temperatures works out of the box since Docker exposes host sysfs read-only by default.
+The container needs read-write access to hwmon to change fan speed — see
+`silvers-hw-monitor/docker-compose.yml`, which mounts `/sys/class/hwmon:/sys/class/hwmon:rw` and
+adds `cap_add: [SYS_RAWIO]`. Reading temperatures works out of the box since Docker exposes host
+sysfs read-only by default.
 
 ## Local development
 
@@ -49,14 +51,31 @@ docker run --rm -p 3300:3300 \
   silvers-hw-monitor
 ```
 
-## Publishing as an umbrelOS / StratumOS community app
+## Repo layout (community app store format)
 
-1. Build and push the image referenced in `docker-compose.yml` (`ghcr.io/SIlver765/silvers-hw-monitor:<version>`).
-2. Add this repo as a community app store in umbrelOS (Settings → App Store → Community App
-   Stores) using this repository's URL, or submit `umbrel-app.yml` + `docker-compose.yml` to a
-   community app store repo.
-3. Bump `version` in both `umbrel-app.yml` and the image tag in `docker-compose.yml` together on
-   every release.
+This repository *is* a community app store, not just one app's files:
+
+```
+umbrel-app-store.yml       <- store id/name (required at repo root)
+silvers-hw-monitor/        <- one folder per app, named after the app id
+  umbrel-app.yml
+  docker-compose.yml
+  icon.svg
+server.js, lib/, public/, Dockerfile, package.json   <- app source (built into the Docker image)
+```
+
+umbrelOS/5tratumOS only looks for `umbrel-app.yml` + `docker-compose.yml` inside a subfolder that
+matches an app's `id` — if those files sit at the repo root instead, the store shows up empty.
+
+## Publishing as an umbrelOS / 5tratumOS community app
+
+1. Build and push the image referenced in `silvers-hw-monitor/docker-compose.yml`
+   (`ghcr.io/SIlver765/silvers-hw-monitor:<version>`).
+2. In umbrelOS/5tratumOS: Settings → App Store → Community App Stores → add
+   `https://github.com/SIlver765/silvers-hw-monitor`. "Silver's HW Monitor" should then appear
+   under the "Silver's Apps" community store.
+3. Bump `version` in both `silvers-hw-monitor/umbrel-app.yml` and the image tag in
+   `silvers-hw-monitor/docker-compose.yml` together on every release.
 
 ## API
 

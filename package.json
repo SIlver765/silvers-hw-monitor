@@ -1,7 +1,7 @@
 {
   "name": "silvers-hw-monitor",
   "version": "1.0.0",
-  "description": "Hardware monitoring and fan control dashboard for umbrelOS / StratumOS",
+  "description": "Hardware monitoring and fan control dashboard for umbrelOS / 5tratumOS",
   "main": "server.js",
   "type": "commonjs",
   "scripts": {
