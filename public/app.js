@@ -163,10 +163,12 @@ function renderFans(data) {
       const headline =
         f.rpm != null ? `${f.rpm} RPM` : f.levelMax != null ? `Level ${f.levelCur ?? 0}/${f.levelMax}` : '—';
 
+      const showChip = f.chip && f.chip.toLowerCase() !== f.label.toLowerCase();
+
       return `
         <div class="fan-block" data-fan-id="${f.id}">
           <div class="fan-head">
-            <span>${f.label}</span>
+            <span>${f.label}${showChip ? ` <span class="fan-chip">· ${f.chip}</span>` : ''}</span>
             <span class="fan-rpm">${headline}</span>
           </div>
           ${body}
