@@ -51,7 +51,7 @@ docker run --rm -p 3300:3300 \
 
 ## Publishing as an umbrelOS / StratumOS community app
 
-1. Build and push the image referenced in `docker-compose.yml` (`ghcr.io/jbechara34/silvers-hw-monitor:<version>`).
+1. Build and push the image referenced in `docker-compose.yml` (`ghcr.io/SIlver765/silvers-hw-monitor:<version>`).
 2. Add this repo as a community app store in umbrelOS (Settings → App Store → Community App
    Stores) using this repository's URL, or submit `umbrel-app.yml` + `docker-compose.yml` to a
    community app store repo.
