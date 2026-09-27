@@ -1,6 +1,6 @@
 manifestVersion: 1
 id: silvers-hw-monitor
-category: system
+category: developer
 name: Silver's HW Monitor
 version: "1.0.0"
 tagline: CPU, RAM, storage stats and fan control for your home server
@@ -16,8 +16,8 @@ dependencies: []
 repo: https://github.com/SIlver765/silvers-hw-monitor
 support: https://github.com/SIlver765/silvers-hw-monitor/issues
 port: 3300
+icon: "https://raw.githubusercontent.com/SIlver765/silvers-hw-monitor/main/silvers-hw-monitor/icon.svg"
 path: ""
 defaultUsername: ""
 defaultPassword: ""
 submitter: SIlver765
-submission: https://github.com/SIlver765/silvers-hw-monitor
