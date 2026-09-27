@@ -7,7 +7,7 @@ services:
       APP_PORT: 3300
 
   web:
-    image: ghcr.io/silver765/silvers-hw-monitor:1.0.0
+    image: ghcr.io/silver765/silvers-hw-monitor:1.1.0
     restart: on-failure
     # Reading temps only needs /sys mounted (Docker already exposes host sysfs read-only
     # by default). Writing fan speed needs read-write access to the hwmon PWM files.

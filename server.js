@@ -62,6 +62,12 @@ app.post('/api/fans/:id/auto', (req, res) => {
   res.status(result.ok ? 200 : 400).json(result);
 });
 
+app.post('/api/diagnostics/run', (req, res) => {
+  const report = hwmon.diagnostics();
+  console.log(`Sensor diagnostics: ${JSON.stringify(report, null, 2)}`);
+  res.json({ ok: true, report });
+});
+
 app.get('/api/logs', (req, res) => {
   const since = req.query.since ? Number(req.query.since) : undefined;
   res.json({ logs: logBuffer.getAll(since) });

@@ -199,18 +199,19 @@ function initTheme() {
   });
 }
 
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b) => b.classList.toggle('active', b.dataset.tab === name));
+  document.querySelectorAll('.tab-panel').forEach((panel) => {
+    panel.hidden = panel.id !== `tab-${name}`;
+  });
+  if (name === 'logs') {
+    document.getElementById('log-error-badge').hidden = true;
+  }
+}
+
 function initTabs() {
-  const buttons = document.querySelectorAll('.tab-btn');
-  buttons.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      buttons.forEach((b) => b.classList.toggle('active', b === btn));
-      document.querySelectorAll('.tab-panel').forEach((panel) => {
-        panel.hidden = panel.id !== `tab-${btn.dataset.tab}`;
-      });
-      if (btn.dataset.tab === 'logs') {
-        document.getElementById('log-error-badge').hidden = true;
-      }
-    });
+  document.querySelectorAll('.tab-btn').forEach((btn) => {
+    btn.addEventListener('click', () => switchTab(btn.dataset.tab));
   });
 }
 
@@ -268,9 +269,27 @@ function initLogControls() {
   });
 }
 
+function initDiagnostics() {
+  document.getElementById('run-diagnostics').addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    btn.disabled = true;
+    btn.textContent = 'Scanning…';
+    try {
+      await fetch('/api/diagnostics/run', { method: 'POST' });
+    } catch (err) {
+      console.error('diagnostics request failed', err);
+    }
+    await pollLogs();
+    switchTab('logs');
+    btn.disabled = false;
+    btn.textContent = 'Run diagnostics';
+  });
+}
+
 initTheme();
 initTabs();
 initLogControls();
+initDiagnostics();
 poll();
 pollLogs();
 setInterval(poll, POLL_MS);
