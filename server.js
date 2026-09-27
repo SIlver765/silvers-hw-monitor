@@ -23,7 +23,7 @@ function pickCpuTemp(temps) {
 app.get('/api/status', async (req, res) => {
   try {
     const temps = hwmon.readTempsC();
-    const fans = [...hwmon.readFans(), ...hwmon.readCoolingFans()];
+    const fans = hwmon.finalizeFanLabels([...hwmon.readFans(), ...hwmon.readCoolingFans()]);
     const [disks, drives] = await Promise.all([metrics.diskUsage(), metrics.driveTemps()]);
 
     res.json({
