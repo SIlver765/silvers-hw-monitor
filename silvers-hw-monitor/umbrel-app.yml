@@ -2,7 +2,7 @@ manifestVersion: 1
 id: silvers-hw-monitor
 category: developer
 name: Silver's HW Monitor
-version: "1.4.0"
+version: "1.4.1"
 tagline: CPU, RAM, storage stats and fan control for your home server
 description: >-
   Silver's HW Monitor is a lightweight dashboard for 5tratumOS that shows
