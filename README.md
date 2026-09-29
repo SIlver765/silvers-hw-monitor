@@ -1,8 +1,8 @@
 # Silver's HW Monitor
 
-A lightweight hardware dashboard for **umbrelOS / [5tratumOS](https://github.com/WillItMod/5tratum)**
-(a home-server OS built the same way as Umbrel): live CPU temp & usage, RAM usage, per-drive
-storage usage & temperature, and fan control — packaged as a self-contained Docker app.
+A lightweight hardware dashboard for **[5tratumOS](https://github.com/WillItMod/5tratum)**:
+live CPU temp & usage, RAM usage, per-drive storage usage & temperature, and fan control —
+packaged as a self-contained Docker app.
 
 Different motherboards/laptops expose fan control very differently, so the app probes for
 several sysfs interfaces and shows whichever one a given chip actually supports — nothing is
@@ -79,14 +79,14 @@ silvers-hw-monitor/        <- one folder per app, named after the app id
 server.js, lib/, public/, Dockerfile, package.json   <- app source (built into the Docker image)
 ```
 
-umbrelOS/5tratumOS only looks for `umbrel-app.yml` + `docker-compose.yml` inside a subfolder that
+5tratumOS only looks for `umbrel-app.yml` + `docker-compose.yml` inside a subfolder that
 matches an app's `id` — if those files sit at the repo root instead, the store shows up empty.
 
-## Publishing as an umbrelOS / 5tratumOS community app
+## Publishing as a 5tratumOS community app
 
 1. Build and push the image referenced in `silvers-hw-monitor/docker-compose.yml`
    (`ghcr.io/SIlver765/silvers-hw-monitor:<version>`).
-2. In umbrelOS/5tratumOS: Settings → App Store → Community App Stores → add
+2. In 5tratumOS: Settings → App Store → Community App Stores → add
    `https://github.com/SIlver765/silvers-hw-monitor`. "Silver's HW Monitor" should then appear
    under the "Silver's Apps" community store.
 3. Bump `version` in both `silvers-hw-monitor/umbrel-app.yml` and the image tag in
