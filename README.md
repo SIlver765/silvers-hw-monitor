@@ -85,9 +85,9 @@ matches an app's `id` — if those files sit at the repo root instead, the store
 ## Publishing as a 5tratumOS community app
 
 1. Build and push the image referenced in `silvers-hw-monitor/docker-compose.yml`
-   (`ghcr.io/SIlver765/silvers-hw-monitor:<version>`).
+   (`ghcr.io/silver765/silvers-hw-monitor:<version>` — registry paths are lowercase-only).
 2. In 5tratumOS: Settings → App Store → Community App Stores → add
-   `https://github.com/SIlver765/silvers-hw-monitor`. "Silver's HW Monitor" should then appear
+   `https://github.com/Silver765/silvers-hw-monitor`. "Silver's HW Monitor" should then appear
    under the "Silver's Apps" community store.
 3. Bump `version` in both `silvers-hw-monitor/umbrel-app.yml` and the image tag in
    `silvers-hw-monitor/docker-compose.yml` together on every release.
